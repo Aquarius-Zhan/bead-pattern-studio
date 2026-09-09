@@ -48,24 +48,57 @@
   let canvas, ctx;
   let viewportEl;
   let worker = null;
+  let currentRequestId = 0;
+  let quantizeWatchdog = null;
 
   // Initialize Web Worker
   function initWorker() {
     try {
+      if (worker) {
+        try { worker.terminate(); } catch (e) {}
+      }
       worker = new Worker('js/worker.js');
+
       worker.onmessage = function(e) {
+        if (!e.data) return;
+        // Ignore stale responses from earlier canceled requests
+        if (e.data.requestId && e.data.requestId !== currentRequestId) {
+          return;
+        }
+
+        clearTimeout(quantizeWatchdog);
         hideLoading();
+
         if (e.data.status === 'success') {
           state.pattern = e.data.result;
           onPatternGenerated();
         } else {
-          alert('生成图纸出错: ' + e.data.error);
+          console.warn('Worker error returned, falling back to fast main thread engine:', e.data.error);
+          fallbackToMainThread();
         }
+      };
+
+      worker.onerror = function(err) {
+        console.error('Web Worker onerror triggered:', err);
+        clearTimeout(quantizeWatchdog);
+        hideLoading();
+        try { worker.terminate(); } catch (e) {}
+        worker = null;
+        fallbackToMainThread();
       };
     } catch (err) {
       console.warn('Web Worker not supported or restricted, falling back to main thread', err);
       worker = null;
     }
+  }
+
+  function fallbackToMainThread() {
+    if (!state.currentImage) return;
+    const { width, height } = getTargetResolution();
+    const imageData = prepareImageData(width, height);
+    const palette = window.BEAD_PALETTES[state.activePaletteKey];
+    if (!palette) return;
+    runMainThreadQuantize(currentRequestId, imageData, palette.colors, state.quantizeOptions);
   }
 
   // Lifecycle Entry Point
@@ -203,37 +236,64 @@
    */
   function generatePattern() {
     if (!state.currentImage) return;
-    showLoading();
+    showLoading('正在计算 CIELAB 拼豆色彩量化...');
 
     const { width, height } = getTargetResolution();
     const imageData = prepareImageData(width, height);
     const palette = window.BEAD_PALETTES[state.activePaletteKey];
     if (!palette) {
       hideLoading();
-      alert('色卡未找到: ' + state.activePaletteKey);
+      showToast('色卡未找到: ' + state.activePaletteKey);
       return;
     }
 
     const options = Object.assign({}, state.quantizeOptions);
+    const reqId = ++currentRequestId;
+
+    // Set 4-second watchdog timer: if worker hangs or drops message, auto-recover on main thread!
+    clearTimeout(quantizeWatchdog);
+    quantizeWatchdog = setTimeout(() => {
+      console.warn('Worker computation timed out (4s watchdog), automatically switching to main thread engine');
+      if (worker) {
+        try { worker.terminate(); } catch (e) {}
+        worker = null;
+        initWorker(); // Spawn fresh worker for next operation
+      }
+      runMainThreadQuantize(reqId, imageData, palette.colors, options);
+    }, 4000);
 
     if (worker) {
-      worker.postMessage({
-        imageData: imageData,
-        paletteColors: palette.colors,
-        options: options
-      });
+      try {
+        worker.postMessage({
+          requestId: reqId,
+          imageData: imageData,
+          paletteColors: palette.colors,
+          options: options
+        });
+      } catch (postErr) {
+        console.warn('Worker postMessage failed, executing on main thread:', postErr);
+        clearTimeout(quantizeWatchdog);
+        runMainThreadQuantize(reqId, imageData, palette.colors, options);
+      }
     } else {
-      setTimeout(() => {
-        try {
-          state.pattern = window.BeadQuantizer.quantizeImage(imageData, palette.colors, options);
-          onPatternGenerated();
-        } catch (e) {
-          alert('生成错误: ' + e.message);
-        } finally {
-          hideLoading();
-        }
-      }, 50);
+      runMainThreadQuantize(reqId, imageData, palette.colors, options);
     }
+  }
+
+  function runMainThreadQuantize(reqId, imageData, paletteColors, options) {
+    clearTimeout(quantizeWatchdog);
+    setTimeout(() => {
+      if (reqId !== currentRequestId) return; // Stale request
+      try {
+        state.pattern = window.BeadQuantizer.quantizeImage(imageData, paletteColors, options);
+        onPatternGenerated();
+      } catch (e) {
+        console.error('Quantization error:', e);
+        showToast('生成图纸出错: ' + e.message);
+      } finally {
+        hideLoading();
+      }
+    }, 16);
   }
 
   function onPatternGenerated() {
@@ -879,6 +939,13 @@
       reader.readAsDataURL(file);
     });
 
+    // Cancel Loading Button
+    document.getElementById('btn-cancel-loading')?.addEventListener('click', () => {
+      clearTimeout(quantizeWatchdog);
+      hideLoading();
+      showToast('已取消本次生成');
+    });
+
     // Dimension Modal Logic
     setupDimensionModal();
     // Palette Modal Logic
@@ -1472,11 +1539,29 @@
     }, 2500);
   }
 
-  function showLoading() {
-    document.getElementById('loading-overlay')?.classList.remove('hidden');
+  let globalLoadingFailsafe = null;
+
+  function showLoading(text) {
+    const overlay = document.getElementById('loading-overlay');
+    if (!overlay) return;
+    const textEl = document.getElementById('loading-text');
+    if (textEl && text) textEl.textContent = text;
+    overlay.classList.remove('hidden');
+
+    // Never let loading overlay hang indefinitely on screen (6-second absolute limit)
+    clearTimeout(globalLoadingFailsafe);
+    globalLoadingFailsafe = setTimeout(() => {
+      if (!overlay.classList.contains('hidden')) {
+        console.warn('Loading overlay dismissed by absolute failsafe timer');
+        overlay.classList.add('hidden');
+        showToast('处理完成或超时，已恢复操作');
+      }
+    }, 6000);
   }
 
   function hideLoading() {
+    clearTimeout(globalLoadingFailsafe);
+    clearTimeout(quantizeWatchdog);
     document.getElementById('loading-overlay')?.classList.add('hidden');
   }
 

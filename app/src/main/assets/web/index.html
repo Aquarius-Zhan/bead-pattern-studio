@@ -353,13 +353,16 @@
   <!-- Loading Spinner Overlay -->
   <div class="loading-overlay hidden" id="loading-overlay">
     <div class="spinner"></div>
-    <span style="font-size: 14px; font-weight: 500; color: #E0E7FF;">正在计算 CIELAB 拼豆色彩量化...</span>
+    <span id="loading-text" style="font-size: 14px; font-weight: 500; color: #E0E7FF; text-align: center; max-width: 80%;">正在计算 CIELAB 拼豆色彩量化...</span>
+    <button class="btn btn-sm btn-outline" id="btn-cancel-loading" style="margin-top: 16px; color: #93C5FD; border-color: rgba(147, 197, 253, 0.4); font-size: 13px; padding: 4px 18px; border-radius: 20px; background: rgba(30, 58, 138, 0.3);">
+      取消
+    </button>
   </div>
 
   <!-- Script Inclusions with cache-busting -->
-  <script src="js/palettes.js?v=2.3"></script>
-  <script src="js/color-quantizer.js?v=2.3"></script>
-  <script src="js/app.js?v=2.3"></script>
+  <script src="js/palettes.js?v=2.4"></script>
+  <script src="js/color-quantizer.js?v=2.4"></script>
+  <script src="js/app.js?v=2.4"></script>
 
   <!-- Wire BOM Modal opener & Service Worker -->
   <script>
