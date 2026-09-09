@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E202C"/>
+      <stop offset="100%" stop-color="#13141C"/>
+    </linearGradient>
+    <radialGradient id="bead1" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FF6B8B"/>
+      <stop offset="70%" stop-color="#FF3366"/>
+      <stop offset="100%" stop-color="#CC1144"/>
+    </radialGradient>
+    <radialGradient id="bead2" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="70%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </radialGradient>
+    <radialGradient id="bead3" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="70%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </radialGradient>
+    <radialGradient id="bead4" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="70%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </radialGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Base App Tile -->
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)"/>
+  <rect x="12" y="12" width="488" height="488" rx="98" fill="none" stroke="#2D3142" stroke-width="4"/>
+
+  <!-- Pegboard 4x4 Grid of Beads -->
+  <g transform="translate(76, 76)">
+    <!-- Row 1 -->
+    <circle cx="60" cy="60" r="46" fill="url(#bead1)" filter="url(#glow)"/>
+    <circle cx="60" cy="60" r="16" fill="#13141C"/>
+    <circle cx="150" cy="60" r="46" fill="url(#bead1)"/>
+    <circle cx="150" cy="60" r="16" fill="#13141C"/>
+    <circle cx="210" cy="60" r="46" fill="url(#bead2)"/>
+    <circle cx="210" cy="60" r="16" fill="#13141C"/>
+    <circle cx="300" cy="60" r="46" fill="url(#bead2)"/>
+    <circle cx="300" cy="60" r="16" fill="#13141C"/>
+
+    <!-- Row 2 -->
+    <circle cx="60" cy="150" r="46" fill="url(#bead1)"/>
+    <circle cx="60" cy="150" r="16" fill="#13141C"/>
+    <circle cx="150" cy="150" r="46" fill="url(#bead4)"/>
+    <circle cx="150" cy="150" r="16" fill="#13141C"/>
+    <circle cx="210" cy="150" r="46" fill="url(#bead4)"/>
+    <circle cx="210" cy="150" r="16" fill="#13141C"/>
+    <circle cx="300" cy="150" r="46" fill="url(#bead2)"/>
+    <circle cx="300" cy="150" r="16" fill="#13141C"/>
+
+    <!-- Row 3 -->
+    <circle cx="60" cy="240" r="46" fill="url(#bead3)"/>
+    <circle cx="60" cy="240" r="16" fill="#13141C"/>
+    <circle cx="150" cy="240" r="46" fill="url(#bead3)"/>
+    <circle cx="150" cy="240" r="16" fill="#13141C"/>
+    <circle cx="210" cy="240" r="46" fill="url(#bead3)"/>
+    <circle cx="210" cy="240" r="16" fill="#13141C"/>
+    <circle cx="300" cy="240" r="46" fill="url(#bead3)"/>
+    <circle cx="300" cy="240" r="16" fill="#13141C"/>
+
+    <!-- Row 4 -->
+    <circle cx="150" cy="310" r="46" fill="url(#bead1)"/>
+    <circle cx="150" cy="310" r="16" fill="#13141C"/>
+    <circle cx="210" cy="310" r="46" fill="url(#bead1)"/>
+    <circle cx="210" cy="310" r="16" fill="#13141C"/>
+  </g>
+</svg>

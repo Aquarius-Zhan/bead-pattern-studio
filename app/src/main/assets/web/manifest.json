@@ -1,0 +1,18 @@
+{
+  "name": "拼豆工坊 - 智能拼豆图纸助手",
+  "short_name": "拼豆图纸",
+  "description": "便捷将任意图片转换为指定几乘几的高精度拼豆图纸，支持同色高亮与用量统计",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#13141C",
+  "theme_color": "#13141C",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

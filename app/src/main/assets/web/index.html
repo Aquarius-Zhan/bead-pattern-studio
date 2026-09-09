@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#13141C">
+  <title>拼豆工坊 - 智能图片转拼豆图纸助手</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <link rel="stylesheet" href="css/style.css?v=2.2">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">🎨</span>
+      <span class="brand-title">拼豆工坊</span>
+    </div>
+
+    <div class="header-actions">
+      <!-- Image Upload Trigger -->
+      <label class="btn btn-sm btn-primary upload-btn-label">
+        <span>📷</span>
+        <span>传图</span>
+        <input type="file" id="image-upload" accept="image/*" style="display: none;">
+      </label>
+
+      <!-- Dimension "几乘几" Trigger -->
+      <button class="btn btn-sm btn-outline" id="btn-open-dimensions">
+        <span>📏</span>
+        <span>几乘几</span>
+      </button>
+
+      <!-- Palette Trigger -->
+      <button class="btn btn-sm btn-outline" id="btn-open-palette">
+        <span>🎨</span>
+        <span id="palette-name-display">MARD</span>
+      </button>
+
+      <!-- Settings Trigger -->
+      <button class="btn btn-sm btn-outline btn-icon" id="btn-open-settings" title="算法参数">
+        <span>⚙️</span>
+      </button>
+
+      <!-- Export Trigger -->
+      <button class="btn btn-sm btn-outline btn-icon" id="btn-open-export" title="导出图纸">
+        <span>💾</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Canvas Viewport Area -->
+  <main class="main-viewport" id="canvas-container">
+    <canvas id="bead-canvas"></canvas>
+
+    <!-- Floating Top Bar (Mode Selector & Stats) -->
+    <div class="floating-top-bar">
+      <div class="floating-pill" id="pattern-stats">加载中...</div>
+
+      <!-- Interaction Mode Selector -->
+      <div class="mode-selector">
+        <button class="mode-btn active" data-mode="view" title="自由拖拽查看">👁️ 浏览</button>
+        <button class="mode-btn" data-mode="highlight" title="点击高亮全图同色豆子">✨ 点亮同色</button>
+        <button class="mode-btn" data-mode="progress" title="点击标记已完成拼豆">✅ 打卡进度</button>
+      </div>
+    </div>
+
+    <!-- Floating Tool Panel (Right side) -->
+    <div class="floating-tools">
+      <button class="tool-fab" id="btn-zoom-in" title="放大">+</button>
+      <button class="tool-fab" id="btn-zoom-out" title="缩小">-</button>
+      <button class="tool-fab" id="btn-zoom-reset" title="适应屏幕">⟲</button>
+      <button class="tool-fab active" id="btn-toggle-labels" title="色号文字">#</button>
+      <button class="tool-fab active" id="btn-toggle-grid" title="坐标标尺网格">田</button>
+    </div>
+  </main>
+
+  <!-- Bottom Action Drawer (BOM Quick Palette Strip) -->
+  <footer class="bottom-drawer">
+    <div class="bom-header">
+      <span class="bom-title" id="progress-stats">快速选色（点击高亮全图同色）</span>
+      <button class="bom-link-btn" id="btn-open-bom">详细用量表 (BOM) &gt;</button>
+    </div>
+    <div class="bom-scroll-strip" id="bom-bar">
+      <!-- Dynamically filled with color chips -->
+    </div>
+  </footer>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- 1. "几乘几" 尺寸规格设置 Modal -->
+  <div class="modal" id="modal-dimensions">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title">设置图纸规格（几乘几）</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-tabs">
+          <button class="modal-tab-btn dim-tab-btn active" data-target="tab-board-mode" data-mode="board">按模板拼板拼接</button>
+          <button class="modal-tab-btn dim-tab-btn" data-target="tab-custom-mode" data-mode="custom">自定义颗粒数</button>
+        </div>
+
+        <!-- Tab 1: 按拼板拼接 -->
+        <div id="tab-board-mode" class="dim-tab-content">
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+            市售标准联锁拼接大方板规格：小豆(2.6mm)为 50×50 钉，大豆(5mm)为 29×29 钉。
+          </p>
+
+          <div class="preset-grid">
+            <div class="preset-board-btn active" data-bx="1" data-by="1" data-bsize="50">
+              <h5>1 × 1 单板</h5>
+              <p>50×50 豆 (2,500粒)</p>
+            </div>
+            <div class="preset-board-btn" data-bx="1" data-by="2" data-bsize="50">
+              <h5>1 × 2 竖长板</h5>
+              <p>50×100 豆 (5,000粒/立绘)</p>
+            </div>
+            <div class="preset-board-btn" data-bx="2" data-by="1" data-bsize="50">
+              <h5>2 × 1 横板</h5>
+              <p>100×50 豆 (5,000粒/横幅)</p>
+            </div>
+            <div class="preset-board-btn" data-bx="2" data-by="2" data-bsize="50">
+              <h5>2 × 2 四联大板</h5>
+              <p>100×100 豆 (10,000粒)</p>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">横向板数 (块)</label>
+              <input type="number" id="input-bx" class="form-control" value="1" min="1" max="10">
+            </div>
+            <div class="form-group">
+              <label class="form-label">纵向板数 (块)</label>
+              <input type="number" id="input-by" class="form-control" value="1" min="1" max="10">
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: 自定义颗粒数 -->
+        <div id="tab-custom-mode" class="dim-tab-content hidden">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">宽度 (豆数)</label>
+              <input type="number" id="input-custom-w" class="form-control" value="50" min="5" max="300">
+            </div>
+            <div class="form-group">
+              <label class="form-label">高度 (豆数)</label>
+              <input type="number" id="input-custom-h" class="form-control" value="50" min="5" max="300">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="check-lock-ratio" checked>
+              <span>锁定原图长宽比（修改宽度自动换算高度）</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 图像适配方式 -->
+        <div class="form-group" style="margin-top: 14px;">
+          <label class="form-label">画面填充方式</label>
+          <select id="select-fit-mode" class="form-control">
+            <option value="contain" selected>完整保留画面 (Contain / 两侧加白留空)</option>
+            <option value="cover">居中裁切铺满 (Cover / 裁剪多余边角)</option>
+            <option value="stretch">强制拉伸贴合 (Stretch)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline modal-close">取消</button>
+        <button class="btn btn-primary" id="btn-apply-dimensions">应用并转换</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 色卡品牌切换 Modal -->
+  <div class="modal" id="modal-palettes">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title">选择拼豆色卡品牌</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body" id="palette-list">
+        <!-- Dynamically rendered palette cards -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 算法高级设置 Modal -->
+  <div class="modal" id="modal-settings">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title">图像量化与算法设置</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">抖动算法 (Dithering)</label>
+          <select id="select-dither" class="form-control">
+            <option value="none" selected>无抖动 (二次元/动漫/像素/图标推荐)</option>
+            <option value="floyd-steinberg">Floyd-Steinberg 误差扩散 (真人/风景推荐)</option>
+            <option value="bayer">Bayer 有序网点抖动 (复古街机风)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">抖动强度: <span id="dither-strength-val">70%</span></label>
+          <input type="range" id="range-dither-strength" min="0" max="100" value="70" style="width: 100%; accent-color: var(--primary);">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">色差距离公式</label>
+          <select id="select-metric" class="form-control">
+            <option value="cie76" selected>CIELAB CIE76 (高速且感知均匀，推荐)</option>
+            <option value="ciede2000">CIEDE2000 (极精准人类视觉微观色差)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">限制最大使用颜色数 (新手套盒模式)</label>
+          <select id="select-max-colors" class="form-control">
+            <option value="0" selected>不限制 (使用色卡全部可用颜色)</option>
+            <option value="16">限制 16 色以内</option>
+            <option value="24">限制 24 色以内 (24色入门套盒)</option>
+            <option value="36">限制 36 色以内</option>
+            <option value="48">限制 48 色以内 (48色精装套盒)</option>
+            <option value="72">限制 72 色以内</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="check-ignore-bg">
+            <span>剔除外围纯色背景（仅在上传白底/纯色底图且希望留空时开启）</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline modal-close">取消</button>
+        <button class="btn btn-primary" id="btn-apply-settings">保存并重新转换</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. 详细 BOM 物料用量清单 Modal -->
+  <div class="modal" id="modal-bom">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title">BOM 拼豆物料采购与用量表</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+
+      <div class="modal-body bom-table-container">
+        <table class="bom-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>色样</th>
+              <th>色号</th>
+              <th>名称</th>
+              <th>数量</th>
+              <th>占比</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="bom-table-body">
+            <!-- Dynamically populated rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="btn-copy-bom">📋 复制采购清单</button>
+        <button class="btn btn-primary modal-close">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 导出图纸 Modal -->
+  <div class="modal" id="modal-export">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title">导出拼豆图纸</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+          导出的图纸将自动生成白底打印模式，附带完整的 1~N 坐标数字尺、5格细线、10格粗线以及每颗豆子内部的高清色号代码！
+        </p>
+
+        <div class="preset-grid" style="grid-template-columns: 1fr;">
+          <div class="preset-board-btn" id="btn-export-full">
+            <h5>🖼️ 导出整张超清图纸 (PNG)</h5>
+            <p>包含整幅作品的所有坐标和网格，适合大图预览与高清平板查看</p>
+          </div>
+
+          <div class="preset-board-btn" id="btn-export-split">
+            <h5>🧩 按单板分切导出 (50×50 切片包)</h5>
+            <p>针对多块联锁板（如 2×2 四联板），自动拆分成板1、板2、板3、板4独立图纸方便摆豆施工</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline modal-close">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Loading Spinner Overlay -->
+  <div class="loading-overlay hidden" id="loading-overlay">
+    <div class="spinner"></div>
+    <span style="font-size: 14px; font-weight: 500; color: #E0E7FF;">正在计算 CIELAB 拼豆色彩量化...</span>
+  </div>
+
+  <!-- Script Inclusions with cache-busting -->
+  <script src="js/palettes.js?v=2.2"></script>
+  <script src="js/color-quantizer.js?v=2.2"></script>
+  <script src="js/app.js?v=2.2"></script>
+
+  <!-- Wire BOM Modal opener & Service Worker -->
+  <script>
+    document.getElementById('btn-open-bom')?.addEventListener('click', () => {
+      document.getElementById('modal-bom')?.classList.add('active');
+    });
+
+    // PWA Service Worker Auto-update
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').then((reg) => {
+          reg.update();
+        }).catch(err => {
+          console.log('ServiceWorker note: ', err);
+        });
+      });
+    }
+  </script>
+
+</body>
+</html>
