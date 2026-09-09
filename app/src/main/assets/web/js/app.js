@@ -1031,6 +1031,11 @@
       state.quantizeOptions.ignoreBgColor = document.getElementById('check-ignore-bg').checked;
       state.quantizeOptions.maxColors = parseInt(document.getElementById('select-max-colors').value) || 0;
       closeModal(modal);
+      if (!state.currentImage) {
+        showToast('设置已保存！请先导入图片生成图纸。');
+        return;
+      }
+      showToast('设置已保存，正在重新生成拼豆图纸...');
       generatePattern();
     });
   }
@@ -1038,21 +1043,30 @@
   /**
    * High-Resolution Pattern & Multi-Board Export
    */
+  let currentPreviewDataUrl = '';
+  let currentPreviewFilename = '';
+
   function setupExportModal() {
     const modal = document.getElementById('modal-export');
     const openBtn = document.getElementById('btn-open-export');
 
     openBtn?.addEventListener('click', () => {
+      if (!state.pattern) {
+        showToast('请先上传图片并生成拼豆图纸！');
+        return;
+      }
       openModal(modal);
     });
 
     // 1. Export Full PNG
     document.getElementById('btn-export-full')?.addEventListener('click', () => {
+      closeModal(modal);
       exportFullPatternImage();
     });
 
     // 2. Export Split Boards
     document.getElementById('btn-export-split')?.addEventListener('click', () => {
+      closeModal(modal);
       exportSplitBoards();
     });
 
@@ -1060,15 +1074,56 @@
     document.getElementById('btn-copy-bom')?.addEventListener('click', () => {
       copyBOMText();
     });
+
+    // 4. Preview Modal Action Buttons
+    document.getElementById('btn-save-to-album')?.addEventListener('click', () => {
+      if (!currentPreviewDataUrl) return;
+      if (window.AndroidBridge && typeof window.AndroidBridge.saveBase64Image === 'function') {
+        window.AndroidBridge.saveBase64Image(currentPreviewDataUrl, currentPreviewFilename);
+      } else {
+        triggerBrowserDownload(currentPreviewDataUrl, currentPreviewFilename);
+        showToast('已尝试发起下载，您也可长按上方图片直接保存！');
+      }
+    });
+
+    document.getElementById('btn-share-image')?.addEventListener('click', () => {
+      if (!currentPreviewDataUrl) return;
+      if (window.AndroidBridge && typeof window.AndroidBridge.shareBase64Image === 'function') {
+        window.AndroidBridge.shareBase64Image(currentPreviewDataUrl, currentPreviewFilename);
+      } else if (navigator.share) {
+        fetch(currentPreviewDataUrl)
+          .then(res => res.blob())
+          .then(blob => {
+            const file = new File([blob], currentPreviewFilename, { type: 'image/png' });
+            navigator.share({
+              files: [file],
+              title: currentPreviewFilename,
+              text: '拼豆工坊生成的图纸'
+            }).catch(e => console.log('Share canceled or not supported', e));
+          });
+      } else {
+        showToast('请直接长按上方图片选择「发送给朋友」');
+      }
+    });
   }
 
   function exportFullPatternImage() {
-    if (!state.pattern) return;
+    if (!state.pattern) {
+      showToast('请先上传图片并生成图纸！');
+      return;
+    }
     showLoading();
 
     setTimeout(() => {
       const { width: pw, height: ph, grid } = state.pattern;
-      const beadPx = 36; // High-res export size per bead
+
+      // Dynamic bead pixel size to prevent mobile Canvas GPU memory overflow (keep <= 3200px)
+      const maxDim = Math.max(pw, ph);
+      let beadPx = 36;
+      if (maxDim * beadPx > 3200) {
+        beadPx = Math.max(16, Math.floor(3200 / maxDim));
+      }
+
       const pad = 60;
       const outW = pw * beadPx + pad * 2;
       const outH = ph * beadPx + pad * 2;
@@ -1167,14 +1222,17 @@
         expCtx.fillText(y.toString(), pad - 8, pad + (y - 0.5) * beadPx);
       }
 
-      // Trigger browser download
-      downloadCanvasImage(expCanvas, `拼豆图纸_${pw}x${ph}.png`);
+      const filename = `拼豆图纸_${pw}x${ph}.png`;
+      saveAndPreviewCanvas(expCanvas, filename);
       hideLoading();
     }, 100);
   }
 
   function exportSplitBoards() {
-    if (!state.pattern) return;
+    if (!state.pattern) {
+      showToast('请先上传图片并生成图纸！');
+      return;
+    }
     const bSize = state.dimensions.boardSize || 50;
     const { width: pw, height: ph } = state.pattern;
 
@@ -1182,20 +1240,47 @@
     const numY = Math.ceil(ph / bSize);
 
     if (numX * numY <= 1) {
-      alert('当前图纸仅为单块模板规格，直接导出整图即可！');
+      showToast('当前图纸仅为单板规格，已直接为您导出整图！');
+      exportFullPatternImage();
       return;
     }
 
-    alert(`正在生成 ${numX}×${numY} = ${numX * numY} 张单板切片图纸，即将依次下载...`);
+    showLoading();
+    showToast(`正在生成 ${numX}×${numY} = ${numX * numY} 张单板切片图纸并保存...`);
 
-    for (let by = 0; by < numY; by++) {
-      for (let bx = 0; bx < numX; bx++) {
-        exportSingleBoardSlice(bx, by, bSize);
+    setTimeout(() => {
+      let firstSliceCanvas = null;
+      let firstSliceName = '';
+
+      for (let by = 0; by < numY; by++) {
+        for (let bx = 0; bx < numX; bx++) {
+          const sliceCanvas = generateBoardSliceCanvas(bx, by, bSize);
+          const sliceName = `拼豆分板_第(${bx + 1},${by + 1})板.png`;
+          if (!firstSliceCanvas) {
+            firstSliceCanvas = sliceCanvas;
+            firstSliceName = sliceName;
+          }
+
+          if (window.AndroidBridge && typeof window.AndroidBridge.saveBase64Image === 'function') {
+            window.AndroidBridge.saveBase64Image(sliceCanvas.toDataURL('image/png'), sliceName);
+          } else {
+            triggerBrowserDownload(sliceCanvas.toDataURL('image/png'), sliceName);
+          }
+        }
       }
-    }
+
+      hideLoading();
+
+      if (firstSliceCanvas) {
+        saveAndPreviewCanvas(firstSliceCanvas, firstSliceName);
+        if (window.AndroidBridge) {
+          showToast(`已成功将 ${numX * numY} 张分板图纸全部保存至手机相册！`);
+        }
+      }
+    }, 100);
   }
 
-  function exportSingleBoardSlice(bx, by, bSize) {
+  function generateBoardSliceCanvas(bx, by, bSize) {
     const { width: pw, height: ph, grid } = state.pattern;
     const startX = bx * bSize;
     const startY = by * bSize;
@@ -1204,7 +1289,7 @@
     const curW = endX - startX;
     const curH = endY - startY;
 
-    const beadPx = 40;
+    const beadPx = 36;
     const pad = 60;
     const outW = curW * beadPx + pad * 2;
     const outH = curH * beadPx + pad * 2;
@@ -1300,16 +1385,46 @@
       ctx.fillText(y.toString(), pad - 8, pad + (y - 0.5) * beadPx);
     }
 
-    downloadCanvasImage(canvas, `拼豆分板_板(${bx + 1},${by + 1}).png`);
+    return canvas;
+  }
+
+  function saveAndPreviewCanvas(cvs, filename) {
+    const dataUrl = cvs.toDataURL('image/png');
+    currentPreviewDataUrl = dataUrl;
+    currentPreviewFilename = filename;
+
+    // 1. In native Android App, auto-save directly to system photo gallery
+    if (window.AndroidBridge && typeof window.AndroidBridge.saveBase64Image === 'function') {
+      window.AndroidBridge.saveBase64Image(dataUrl, filename);
+    } else {
+      // Regular browser auto-download trigger
+      triggerBrowserDownload(dataUrl, filename);
+    }
+
+    // 2. Open preview modal for immediate verification, zoom & long-press save
+    const previewModal = document.getElementById('modal-image-preview');
+    const previewImg = document.getElementById('preview-image');
+    const infoEl = document.getElementById('preview-image-info');
+    if (previewImg) previewImg.src = dataUrl;
+    if (infoEl) infoEl.textContent = `${filename}（分辨率: ${cvs.width}×${cvs.height} 像素）`;
+    openModal(previewModal);
+  }
+
+  function triggerBrowserDownload(dataUrl, filename) {
+    try {
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (e) {
+      console.warn('Browser download trigger error:', e);
+    }
   }
 
   function downloadCanvasImage(cvs, filename) {
-    const a = document.createElement('a');
-    a.href = cvs.toDataURL('image/png');
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    saveAndPreviewCanvas(cvs, filename);
   }
 
   function copyBOMText() {
