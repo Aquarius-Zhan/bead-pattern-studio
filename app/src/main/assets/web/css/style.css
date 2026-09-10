@@ -87,10 +87,10 @@ html, body {
    1. Studio Floating Island Header
    ========================================================================== */
 .app-header {
-  height: calc(54px + var(--safe-top));
+  height: calc(50px + var(--safe-top));
   padding-top: var(--safe-top);
-  padding-left: 14px;
-  padding-right: 14px;
+  padding-left: 10px;
+  padding-right: 10px;
   background: var(--glass-bg);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   backdrop-filter: blur(20px) saturate(180%);
@@ -99,6 +99,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 6px;
   z-index: 30;
   flex-shrink: 0;
 }
@@ -106,12 +107,14 @@ html, body {
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 7px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .brand-icon-wrapper {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: var(--radius-sm);
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.15));
   border: 1px solid rgba(99, 102, 241, 0.35);
@@ -120,36 +123,23 @@ html, body {
   justify-content: center;
   color: #A5B4FC;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-.brand-text-group {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
+  flex-shrink: 0;
 }
 
 .brand-title {
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
-}
-
-.brand-subtitle {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  color: var(--accent-primary);
-  background: rgba(99, 102, 241, 0.12);
-  padding: 1px 4px;
-  border-radius: 3px;
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
 /* ==========================================================================
@@ -159,15 +149,17 @@ html, body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  height: 34px;
-  padding: 0 12px;
+  gap: 4px;
+  height: 30px;
+  padding: 0 8px;
   border-radius: var(--radius-sm);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: -0.01em;
   cursor: pointer;
   border: 1px solid transparent;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: transform 0.12s var(--ease-spring), background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -178,7 +170,7 @@ html, body {
 .btn-primary {
   background: var(--accent-primary);
   color: var(--text-on-accent);
-  box-shadow: 0 2px 10px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 8px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .btn-primary:active {
@@ -199,16 +191,25 @@ html, body {
 }
 
 .btn-icon {
-  width: 34px;
-  height: 34px;
+  width: 29px;
+  height: 29px;
   padding: 0;
   border-radius: var(--radius-sm);
+  flex-shrink: 0;
 }
 
 .btn-sm {
-  height: 30px;
-  padding: 0 9px;
-  font-size: 12px;
+  height: 29px;
+  padding: 0 6px;
+  font-size: 11.5px;
+}
+
+#palette-name-display {
+  max-width: 52px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .upload-btn-label {
@@ -241,11 +242,9 @@ html, body {
 /* Top Floating Bar */
 .floating-top-bar {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  right: 12px;
+  top: 10px;
+  left: 10px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   pointer-events: none;
   z-index: 10;
@@ -259,7 +258,7 @@ html, body {
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-highlight), 0 4px 16px rgba(0, 0, 0, 0.4);
   border-radius: var(--radius-pill);
-  padding: 4px 12px;
+  padding: 4px 11px;
   font-size: 11px;
   font-weight: 600;
   color: var(--text-secondary);
@@ -275,45 +274,7 @@ html, body {
   border-radius: 50%;
   background-color: var(--accent-emerald);
   box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
-}
-
-/* Mode Selector Segmented Capsule */
-.mode-selector {
-  pointer-events: auto;
-  display: flex;
-  background: var(--glass-bg);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-highlight), 0 4px 16px rgba(0, 0, 0, 0.4);
-  border-radius: var(--radius-pill);
-  padding: 3px;
-  gap: 2px;
-}
-
-.mode-btn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 5px 10px;
-  border-radius: var(--radius-pill);
-  cursor: pointer;
-  transition: all 0.15s var(--ease-spring);
-}
-
-.mode-btn:active {
-  transform: scale(0.94);
-}
-
-.mode-btn.active {
-  background: var(--accent-primary);
-  color: var(--text-on-accent);
-  box-shadow: 0 2px 8px var(--accent-glow);
+  flex-shrink: 0;
 }
 
 /* Floating Tools Vertical Dock */
@@ -1202,5 +1163,40 @@ html, body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Narrow Mobile Screen Adaptations (320px - 380px) */
+@media (max-width: 380px) {
+  .app-header {
+    padding-left: 6px;
+    padding-right: 6px;
+    gap: 4px;
+  }
+  .brand {
+    gap: 5px;
+  }
+  .brand-title {
+    font-size: 13.5px;
+  }
+  .brand-icon-wrapper {
+    width: 26px;
+    height: 26px;
+  }
+  .header-actions {
+    gap: 3px;
+  }
+  .btn-sm {
+    height: 28px;
+    padding: 0 5px;
+    font-size: 11px;
+    gap: 3px;
+  }
+  .btn-icon {
+    width: 27px;
+    height: 27px;
+  }
+  #palette-name-display {
+    max-width: 42px;
   }
 }
