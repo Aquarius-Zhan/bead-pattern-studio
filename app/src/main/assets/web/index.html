@@ -6,49 +6,84 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#13141C">
-  <title>拼豆工坊 - 智能图片转拼豆图纸助手</title>
+  <meta name="theme-color" content="#090A0F">
+  <title>拼豆工坊 · 像素手作与图纸生成器</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
-  <link rel="stylesheet" href="css/style.css?v=2.2">
+  <link rel="stylesheet" href="css/style.css?v=3.0">
 </head>
 <body>
 
-  <!-- Top Navigation Bar -->
+  <!-- Top Studio Floating Island Header -->
   <header class="app-header">
     <div class="brand">
-      <span class="brand-icon">🎨</span>
-      <span class="brand-title">拼豆工坊</span>
+      <div class="brand-icon-wrapper">
+        <svg class="brand-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="7" cy="7" r="3"/>
+          <circle cx="17" cy="7" r="3"/>
+          <circle cx="7" cy="17" r="3"/>
+          <circle cx="17" cy="17" r="3"/>
+          <path d="M7 10v4M17 10v4M10 7h4M10 17h4"/>
+        </svg>
+      </div>
+      <div class="brand-text-group">
+        <span class="brand-title">拼豆工坊</span>
+        <span class="brand-subtitle">STUDIO</span>
+      </div>
     </div>
 
     <div class="header-actions">
       <!-- Image Upload Trigger -->
-      <label class="btn btn-sm btn-primary upload-btn-label">
-        <span>📷</span>
+      <label class="btn btn-sm btn-primary upload-btn-label" title="导入图片转换拼豆">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
         <span>传图</span>
         <input type="file" id="image-upload" accept="image/*" style="display: none;">
       </label>
 
       <!-- Dimension "几乘几" Trigger -->
-      <button class="btn btn-sm btn-outline" id="btn-open-dimensions">
-        <span>📏</span>
-        <span>几乘几</span>
+      <button class="btn btn-sm btn-secondary" id="btn-open-dimensions" title="图纸尺寸规格">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="18" height="18" x="3" y="3" rx="2"/>
+          <path d="M3 9h18M9 21V9"/>
+        </svg>
+        <span>规格</span>
       </button>
 
       <!-- Palette Trigger -->
-      <button class="btn btn-sm btn-outline" id="btn-open-palette">
-        <span>🎨</span>
+      <button class="btn btn-sm btn-secondary" id="btn-open-palette" title="选择色卡品牌">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
+          <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
+          <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+          <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
+          <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.6-.7 1.6-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1a1.6 1.6 0 0 1 1.7-1.7h2c3 0 5.5-2.5 5.5-5.5C22 6 17.5 2 12 2z"/>
+        </svg>
         <span id="palette-name-display">MARD</span>
       </button>
 
       <!-- Settings Trigger -->
-      <button class="btn btn-sm btn-outline btn-icon" id="btn-open-settings" title="算法参数">
-        <span>⚙️</span>
+      <button class="btn btn-sm btn-icon btn-secondary" id="btn-open-settings" title="调色与量化设置">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" x2="20" y1="21" y2="21"/>
+          <line x1="4" x2="20" y1="14" y2="14"/>
+          <line x1="4" x2="20" y1="7" y2="7"/>
+          <circle cx="8" cy="21" r="2"/>
+          <circle cx="16" cy="14" r="2"/>
+          <circle cx="10" cy="7" r="2"/>
+        </svg>
       </button>
 
       <!-- Export Trigger -->
-      <button class="btn btn-sm btn-outline btn-icon" id="btn-open-export" title="导出图纸">
-        <span>💾</span>
+      <button class="btn btn-sm btn-icon btn-secondary" id="btn-open-export" title="导出图纸">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
       </button>
     </div>
   </header>
@@ -57,75 +92,138 @@
   <main class="main-viewport" id="canvas-container">
     <canvas id="bead-canvas"></canvas>
 
-    <!-- Floating Top Bar (Mode Selector & Stats) -->
+    <!-- Floating Top Cockpit Bar (Status Badge & Segmented Mode Pill) -->
     <div class="floating-top-bar">
-      <div class="floating-pill" id="pattern-stats">加载中...</div>
+      <div class="floating-pill status-pill" id="pattern-stats">
+        <span class="status-indicator"></span>
+        <span class="status-text">就绪</span>
+      </div>
 
-      <!-- Interaction Mode Selector -->
+      <!-- Interaction Mode Segmented Capsule -->
       <div class="mode-selector">
-        <button class="mode-btn active" data-mode="view" title="自由拖拽查看">👁️ 浏览</button>
-        <button class="mode-btn" data-mode="highlight" title="点击高亮全图同色豆子">✨ 点亮同色</button>
-        <button class="mode-btn" data-mode="progress" title="点击标记已完成拼豆">✅ 打卡进度</button>
+        <button class="mode-btn active" data-mode="view" title="双指缩放拖拽查看">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <span>漫游</span>
+        </button>
+        <button class="mode-btn" data-mode="highlight" title="点击高亮全图同色拼豆">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/>
+          </svg>
+          <span>探色</span>
+        </button>
+        <button class="mode-btn" data-mode="progress" title="点按标记已完成打卡拼豆">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m9 11 3 3L22 4"/>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+          <span>打卡</span>
+        </button>
       </div>
     </div>
 
-    <!-- Floating Tool Panel (Right side) -->
+    <!-- Floating Canvas Tool Dock (Right Side) -->
     <div class="floating-tools">
-      <button class="tool-fab" id="btn-zoom-in" title="放大">+</button>
-      <button class="tool-fab" id="btn-zoom-out" title="缩小">-</button>
-      <button class="tool-fab" id="btn-zoom-reset" title="适应屏幕">⟲</button>
-      <button class="tool-fab active" id="btn-toggle-labels" title="色号文字">#</button>
-      <button class="tool-fab active" id="btn-toggle-grid" title="坐标标尺网格">田</button>
+      <button class="tool-fab" id="btn-zoom-in" title="放大画布">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </button>
+      <button class="tool-fab" id="btn-zoom-out" title="缩小画布">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </button>
+      <button class="tool-fab" id="btn-zoom-reset" title="重置适应屏幕">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 1 0 9-9 9.8 9.8 0 0 0-6.7 2.7L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+      </button>
+      <div class="tool-divider"></div>
+      <button class="tool-fab active" id="btn-toggle-labels" title="显示或隐藏色号编号">
+        <span class="tool-fab-text">#</span>
+      </button>
+      <button class="tool-fab active" id="btn-toggle-grid" title="显示或隐藏标尺网格">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="18" height="18" x="3" y="3" rx="2"/>
+          <line x1="3" y1="9" x2="21" y2="9"/>
+          <line x1="3" y1="15" x2="21" y2="15"/>
+          <line x1="9" y1="3" x2="9" y2="21"/>
+          <line x1="15" y1="3" x2="15" y2="21"/>
+        </svg>
+      </button>
     </div>
   </main>
 
-  <!-- Bottom Action Drawer (BOM Quick Palette Strip) -->
+  <!-- Bottom Action Drawer (BOM Quick Strip) -->
   <footer class="bottom-drawer">
+    <div class="drawer-handle-bar"></div>
     <div class="bom-header">
-      <span class="bom-title" id="progress-stats">快速选色（点击高亮全图同色）</span>
-      <button class="bom-link-btn" id="btn-open-bom">详细用量表 (BOM) &gt;</button>
+      <div class="bom-title-group">
+        <span class="bom-indicator-dot"></span>
+        <span class="bom-title" id="progress-stats">选色探查 · 点选高亮同色</span>
+      </div>
+      <button class="bom-link-btn" id="btn-open-bom">
+        <span>物料清单 BOM</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
     </div>
     <div class="bom-scroll-strip" id="bom-bar">
-      <!-- Dynamically filled with color chips -->
+      <!-- Dynamically filled with tactile bead chips -->
     </div>
   </footer>
 
-  <!-- ================= MODALS ================= -->
+  <!-- ================= MODAL DIALOGS ================= -->
 
   <!-- 1. "几乘几" 尺寸规格设置 Modal -->
   <div class="modal" id="modal-dimensions">
+    <div class="modal-backdrop modal-close"></div>
     <div class="modal-sheet">
+      <div class="modal-handle-bar"></div>
       <div class="modal-header">
-        <h3 class="modal-title">设置图纸规格（几乘几）</h3>
-        <button class="modal-close">&times;</button>
+        <div class="modal-title-group">
+          <h3 class="modal-title">图纸画板规格</h3>
+          <span class="modal-subtitle">GRID SPECIFICATION</span>
+        </div>
+        <button class="modal-close-btn modal-close" aria-label="关闭">&times;</button>
       </div>
 
       <div class="modal-body">
         <div class="modal-tabs">
-          <button class="modal-tab-btn dim-tab-btn active" data-target="tab-board-mode" data-mode="board">按模板拼板拼接</button>
+          <button class="modal-tab-btn dim-tab-btn active" data-target="tab-board-mode" data-mode="board">标准联锁拼板</button>
           <button class="modal-tab-btn dim-tab-btn" data-target="tab-custom-mode" data-mode="custom">自定义颗粒数</button>
         </div>
 
         <!-- Tab 1: 按拼板拼接 -->
         <div id="tab-board-mode" class="dim-tab-content">
-          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
-            市售标准联锁拼接大方板规格：小豆(2.6mm)为 50×50 钉，大豆(5mm)为 29×29 钉。
-          </p>
+          <div class="info-callout">
+            市售标准联锁大方板规格：小豆 (2.6mm) 为 50×50 钉，大豆 (5mm) 为 29×29 钉。
+          </div>
 
           <div class="preset-grid">
             <div class="preset-board-btn active" data-bx="1" data-by="1" data-bsize="50">
+              <div class="preset-badge">单板</div>
               <h5>1 × 1 单板</h5>
               <p>50×50 豆 (2,500粒)</p>
             </div>
             <div class="preset-board-btn" data-bx="1" data-by="2" data-bsize="50">
+              <div class="preset-badge">立绘</div>
               <h5>1 × 2 竖长板</h5>
-              <p>50×100 豆 (5,000粒/立绘)</p>
+              <p>50×100 豆 (5,000粒)</p>
             </div>
             <div class="preset-board-btn" data-bx="2" data-by="1" data-bsize="50">
+              <div class="preset-badge">横幅</div>
               <h5>2 × 1 横板</h5>
-              <p>100×50 豆 (5,000粒/横幅)</p>
+              <p>100×50 豆 (5,000粒)</p>
             </div>
             <div class="preset-board-btn" data-bx="2" data-by="2" data-bsize="50">
+              <div class="preset-badge">四联</div>
               <h5>2 × 2 四联大板</h5>
               <p>100×100 豆 (10,000粒)</p>
             </div>
@@ -133,11 +231,11 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">横向板数 (块)</label>
+              <label class="form-label" for="input-bx">横向拼板 (块)</label>
               <input type="number" id="input-bx" class="form-control" value="1" min="1" max="10">
             </div>
             <div class="form-group">
-              <label class="form-label">纵向板数 (块)</label>
+              <label class="form-label" for="input-by">纵向拼板 (块)</label>
               <input type="number" id="input-by" class="form-control" value="1" min="1" max="10">
             </div>
           </div>
@@ -147,11 +245,11 @@
         <div id="tab-custom-mode" class="dim-tab-content hidden">
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">宽度 (豆数)</label>
+              <label class="form-label" for="input-custom-w">宽度 (豆数)</label>
               <input type="number" id="input-custom-w" class="form-control" value="50" min="5" max="300">
             </div>
             <div class="form-group">
-              <label class="form-label">高度 (豆数)</label>
+              <label class="form-label" for="input-custom-h">高度 (豆数)</label>
               <input type="number" id="input-custom-h" class="form-control" value="50" min="5" max="300">
             </div>
           </div>
@@ -159,35 +257,40 @@
           <div class="form-group">
             <label class="checkbox-label">
               <input type="checkbox" id="check-lock-ratio" checked>
-              <span>锁定原图长宽比（修改宽度自动换算高度）</span>
+              <span>锁定原图长宽比（调整宽度时自动同步高度）</span>
             </label>
           </div>
         </div>
 
         <!-- 图像适配方式 -->
         <div class="form-group" style="margin-top: 14px;">
-          <label class="form-label">画面填充方式</label>
+          <label class="form-label" for="select-fit-mode">画面填充与裁切方式</label>
           <select id="select-fit-mode" class="form-control">
-            <option value="contain" selected>完整保留画面 (Contain / 两侧加白留空)</option>
-            <option value="cover">居中裁切铺满 (Cover / 裁剪多余边角)</option>
-            <option value="stretch">强制拉伸贴合 (Stretch)</option>
+            <option value="contain" selected>完整保留画面 (Contain · 两侧补白留空)</option>
+            <option value="cover">居中裁切铺满 (Cover · 填满画板)</option>
+            <option value="stretch">拉伸贴合 (Stretch)</option>
           </select>
         </div>
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-outline modal-close">取消</button>
-        <button class="btn btn-primary" id="btn-apply-dimensions">应用并转换</button>
+        <button class="btn btn-secondary modal-close">取消</button>
+        <button class="btn btn-primary" id="btn-apply-dimensions">应用并重新生成</button>
       </div>
     </div>
   </div>
 
   <!-- 2. 色卡品牌切换 Modal -->
   <div class="modal" id="modal-palettes">
+    <div class="modal-backdrop modal-close"></div>
     <div class="modal-sheet">
+      <div class="modal-handle-bar"></div>
       <div class="modal-header">
-        <h3 class="modal-title">选择拼豆色卡品牌</h3>
-        <button class="modal-close">&times;</button>
+        <div class="modal-title-group">
+          <h3 class="modal-title">拼豆色卡品牌</h3>
+          <span class="modal-subtitle">COLOR PALETTES</span>
+        </div>
+        <button class="modal-close-btn modal-close" aria-label="关闭">&times;</button>
       </div>
       <div class="modal-body" id="palette-list">
         <!-- Dynamically rendered palette cards -->
@@ -197,43 +300,51 @@
 
   <!-- 3. 算法高级设置 Modal -->
   <div class="modal" id="modal-settings">
+    <div class="modal-backdrop modal-close"></div>
     <div class="modal-sheet">
+      <div class="modal-handle-bar"></div>
       <div class="modal-header">
-        <h3 class="modal-title">图像量化与算法设置</h3>
-        <button class="modal-close">&times;</button>
+        <div class="modal-title-group">
+          <h3 class="modal-title">图像量化与算法设置</h3>
+          <span class="modal-subtitle">QUANTIZATION SETTINGS</span>
+        </div>
+        <button class="modal-close-btn modal-close" aria-label="关闭">&times;</button>
       </div>
 
       <div class="modal-body">
         <div class="form-group">
-          <label class="form-label">抖动算法 (Dithering)</label>
+          <label class="form-label" for="select-dither">抖动算法 (Dithering)</label>
           <select id="select-dither" class="form-control">
-            <option value="none" selected>无抖动 (二次元/动漫/像素/图标推荐)</option>
-            <option value="floyd-steinberg">Floyd-Steinberg 误差扩散 (真人/风景推荐)</option>
-            <option value="bayer">Bayer 有序网点抖动 (复古街机风)</option>
+            <option value="none" selected>无抖动 (二次元、卡通与像素插画推荐)</option>
+            <option value="floyd-steinberg">Floyd-Steinberg 误差扩散 (写实照片与复杂渐变推荐)</option>
+            <option value="bayer">Bayer 有序网点抖动 (复古像素阶调)</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label class="form-label">抖动强度: <span id="dither-strength-val">70%</span></label>
-          <input type="range" id="range-dither-strength" min="0" max="100" value="70" style="width: 100%; accent-color: var(--primary);">
+          <div class="slider-header">
+            <label class="form-label" for="range-dither-strength">抖动强度</label>
+            <span class="slider-value-badge" id="dither-strength-val">70%</span>
+          </div>
+          <input type="range" id="range-dither-strength" min="0" max="100" value="70" class="custom-range">
         </div>
 
         <div class="form-group">
-          <label class="form-label">色差距离公式</label>
+          <label class="form-label" for="select-metric">色彩感知模型</label>
           <select id="select-metric" class="form-control">
-            <option value="cie76" selected>CIELAB CIE76 (高速且感知均匀，推荐)</option>
-            <option value="ciede2000">CIEDE2000 (极精准人类视觉微观色差)</option>
+            <option value="cie76" selected>CIELAB CIE76 (高速且感知均衡，推荐)</option>
+            <option value="ciede2000">CIEDE2000 (微观视觉色差严苛匹配)</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label class="form-label">限制最大使用颜色数 (新手套盒模式)</label>
+          <label class="form-label" for="select-max-colors">限制总色数 (新手套盒专享)</label>
           <select id="select-max-colors" class="form-control">
             <option value="0" selected>不限制 (使用色卡全部可用颜色)</option>
             <option value="16">限制 16 色以内</option>
-            <option value="24">限制 24 色以内 (24色入门套盒)</option>
+            <option value="24">限制 24 色以内 (24色初学者盒装)</option>
             <option value="36">限制 36 色以内</option>
-            <option value="48">限制 48 色以内 (48色精装套盒)</option>
+            <option value="48">限制 48 色以内 (48色精选盒装)</option>
             <option value="72">限制 72 色以内</option>
           </select>
         </div>
@@ -241,13 +352,13 @@
         <div class="form-group">
           <label class="checkbox-label">
             <input type="checkbox" id="check-ignore-bg">
-            <span>剔除外围纯色背景（仅在上传白底/纯色底图且希望留空时开启）</span>
+            <span>剔除外围纯色背景（仅在纯白或单色背景图希望留空时开启）</span>
           </label>
         </div>
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-outline modal-close">取消</button>
+        <button class="btn btn-secondary modal-close">取消</button>
         <button class="btn btn-primary" id="btn-apply-settings">保存并重新转换</button>
       </div>
     </div>
@@ -255,23 +366,28 @@
 
   <!-- 4. 详细 BOM 物料用量清单 Modal -->
   <div class="modal" id="modal-bom">
-    <div class="modal-sheet">
+    <div class="modal-backdrop modal-close"></div>
+    <div class="modal-sheet modal-sheet-large">
+      <div class="modal-handle-bar"></div>
       <div class="modal-header">
-        <h3 class="modal-title">BOM 拼豆物料采购与用量表</h3>
-        <button class="modal-close">&times;</button>
+        <div class="modal-title-group">
+          <h3 class="modal-title">拼豆物料清单与采购表</h3>
+          <span class="modal-subtitle">BILL OF MATERIALS</span>
+        </div>
+        <button class="modal-close-btn modal-close" aria-label="关闭">&times;</button>
       </div>
 
       <div class="modal-body bom-table-container">
         <table class="bom-table">
           <thead>
             <tr>
-              <th>#</th>
-              <th>色样</th>
+              <th>序号</th>
+              <th>样色</th>
               <th>色号</th>
               <th>名称</th>
               <th>数量</th>
               <th>占比</th>
-              <th>操作</th>
+              <th>定位</th>
             </tr>
           </thead>
           <tbody id="bom-table-body">
@@ -281,68 +397,124 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-outline" id="btn-copy-bom">📋 复制采购清单</button>
-        <button class="btn btn-primary modal-close">关闭</button>
+        <button class="btn btn-secondary" id="btn-copy-bom">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+          </svg>
+          <span>复制采购清单</span>
+        </button>
+        <button class="btn btn-primary modal-close">完成</button>
       </div>
     </div>
   </div>
 
   <!-- 5. 导出图纸 Modal -->
   <div class="modal" id="modal-export">
+    <div class="modal-backdrop modal-close"></div>
     <div class="modal-sheet">
+      <div class="modal-handle-bar"></div>
       <div class="modal-header">
-        <h3 class="modal-title">导出拼豆图纸</h3>
-        <button class="modal-close">&times;</button>
+        <div class="modal-title-group">
+          <h3 class="modal-title">导出拼豆施工图纸</h3>
+          <span class="modal-subtitle">EXPORT PATTERN</span>
+        </div>
+        <button class="modal-close-btn modal-close" aria-label="关闭">&times;</button>
       </div>
 
       <div class="modal-body">
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
-          导出的图纸将自动生成白底打印模式，附带完整的 1~N 坐标数字尺、5格细线、10格粗线以及每颗豆子内部的高清色号代码！
-        </p>
+        <div class="info-callout">
+          导出的图纸将自动转为标准白底打印模式，包含坐标标尺、5格辅助线、10格分界线以及每个豆位的清晰色号。
+        </div>
 
-        <div class="preset-grid" style="grid-template-columns: 1fr;">
-          <div class="preset-board-btn" id="btn-export-full">
-            <h5>🖼️ 导出整张超清图纸 (PNG)</h5>
-            <p>包含整幅作品的所有坐标和网格，适合大图预览与高清平板查看</p>
+        <div class="export-options-grid">
+          <div class="export-card" id="btn-export-full">
+            <div class="export-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect width="18" height="18" x="3" y="3" rx="2"/>
+                <circle cx="9" cy="9" r="2"/>
+                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+              </svg>
+            </div>
+            <div class="export-card-content">
+              <h5>导出整张超清图纸 (PNG)</h5>
+              <p>完整作品全幅图纸，含标尺与色号，适合平板查看与整幅施工</p>
+            </div>
           </div>
 
-          <div class="preset-board-btn" id="btn-export-split">
-            <h5>🧩 按单板分切导出 (50×50 切片包)</h5>
-            <p>针对多块联锁板（如 2×2 四联板），自动拆分成板1、板2、板3、板4独立图纸方便摆豆施工</p>
+          <div class="export-card" id="btn-export-split">
+            <div class="export-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect width="7" height="7" x="3" y="3" rx="1"/>
+                <rect width="7" height="7" x="14" y="3" rx="1"/>
+                <rect width="7" height="7" x="14" y="14" rx="1"/>
+                <rect width="7" height="7" x="3" y="14" rx="1"/>
+              </svg>
+            </div>
+            <div class="export-card-content">
+              <h5>按单板分切导出 (50×50 切片包)</h5>
+              <p>多拼板大作拆解为板1、板2等独立分图，便于在桌面上按板组装拼搭</p>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-outline modal-close">关闭</button>
+        <button class="btn btn-secondary modal-close">关闭</button>
       </div>
     </div>
   </div>
 
   <!-- 6. 图纸预览与保存弹窗 Modal -->
   <div class="modal" id="modal-image-preview">
-    <div class="modal-sheet" style="max-height: 92vh; display: flex; flex-direction: column;">
+    <div class="modal-backdrop modal-close"></div>
+    <div class="modal-sheet modal-sheet-preview">
+      <div class="modal-handle-bar"></div>
       <div class="modal-header">
-        <h3 class="modal-title" id="preview-modal-title">图纸预览与保存</h3>
-        <button class="modal-close">&times;</button>
+        <div class="modal-title-group">
+          <h3 class="modal-title" id="preview-modal-title">图纸预览与保存</h3>
+          <span class="modal-subtitle">PATTERN PREVIEW</span>
+        </div>
+        <button class="modal-close-btn modal-close" aria-label="关闭">&times;</button>
       </div>
 
-      <div class="modal-body" style="text-align: center; overflow-y: auto; padding: 12px 16px;">
-        <div style="background: rgba(37, 99, 235, 0.12); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; font-size: 13px; color: #93C5FD; text-align: left; line-height: 1.5;">
-          💡 <b>手机端提示</b>：除了点击下方按钮保存，也可以直接<b>【长按下方图片】</b>唤起系统菜单进行保存或发送！
+      <div class="modal-body preview-body">
+        <div class="preview-tip-banner">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span><b>手机端小贴士</b>：除点击保存按钮外，也可<b>长按下方图片</b>唤起系统菜单保存或发送。</span>
         </div>
 
-        <div style="max-height: 48vh; overflow: auto; border: 1px solid var(--border-color); border-radius: 8px; background: #ffffff; padding: 4px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);">
-          <img id="preview-image" src="" alt="拼豆图纸预览" style="width: 100%; display: block; object-fit: contain;">
+        <div class="preview-image-frame">
+          <img id="preview-image" src="" alt="拼豆图纸预览">
         </div>
 
-        <p id="preview-image-info" style="font-size: 12px; color: var(--text-muted); margin-top: 8px;"></p>
+        <p id="preview-image-info" class="preview-info-text"></p>
       </div>
 
-      <div class="modal-footer" style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <button class="btn btn-primary" id="btn-save-to-album" style="flex: 1; min-width: 120px;">💾 保存到相册</button>
-        <button class="btn btn-outline" id="btn-share-image" style="flex: 1; min-width: 100px;">📤 分享图纸</button>
-        <button class="btn btn-outline modal-close">关闭</button>
+      <div class="modal-footer preview-actions">
+        <button class="btn btn-primary" id="btn-save-to-album">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>保存到手机相册</span>
+        </button>
+        <button class="btn btn-secondary" id="btn-share-image">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="18" cy="5" r="3"/>
+            <circle cx="6" cy="12" r="3"/>
+            <circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+          <span>系统分享</span>
+        </button>
+        <button class="btn btn-secondary modal-close">关闭</button>
       </div>
     </div>
   </div>
@@ -352,17 +524,17 @@
 
   <!-- Loading Spinner Overlay -->
   <div class="loading-overlay hidden" id="loading-overlay">
-    <div class="spinner"></div>
-    <span id="loading-text" style="font-size: 14px; font-weight: 500; color: #E0E7FF; text-align: center; max-width: 80%;">正在计算 CIELAB 拼豆色彩量化...</span>
-    <button class="btn btn-sm btn-outline" id="btn-cancel-loading" style="margin-top: 16px; color: #93C5FD; border-color: rgba(147, 197, 253, 0.4); font-size: 13px; padding: 4px 18px; border-radius: 20px; background: rgba(30, 58, 138, 0.3);">
-      取消
-    </button>
+    <div class="spinner-orbit">
+      <div class="spinner-bead"></div>
+    </div>
+    <span id="loading-text" class="loading-caption">正在计算 CIELAB 拼豆色彩量化...</span>
+    <button class="btn btn-sm btn-cancel-load" id="btn-cancel-loading">取消本次计算</button>
   </div>
 
   <!-- Script Inclusions with cache-busting -->
-  <script src="js/palettes.js?v=2.4"></script>
-  <script src="js/color-quantizer.js?v=2.4"></script>
-  <script src="js/app.js?v=2.4"></script>
+  <script src="js/palettes.js?v=3.0"></script>
+  <script src="js/color-quantizer.js?v=3.0"></script>
+  <script src="js/app.js?v=3.0"></script>
 
   <!-- Wire BOM Modal opener & Service Worker -->
   <script>

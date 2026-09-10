@@ -308,7 +308,7 @@
     const statsEl = document.getElementById('pattern-stats');
     if (!statsEl || !state.pattern) return;
     const { width, height, totalBeads, uniqueColors } = state.pattern;
-    statsEl.textContent = `${width}×${height} 豆 (${totalBeads}颗 / ${uniqueColors}色)`;
+    statsEl.innerHTML = `<span class="status-indicator"></span><span>${width}×${height} 豆 (${totalBeads}颗 / ${uniqueColors}色)</span>`;
   }
 
   /**
@@ -854,8 +854,8 @@
         <td>${item.count}</td>
         <td>${item.percentage}%</td>
         <td>
-          <button class="btn btn-sm btn-outline highlight-btn" data-code="${bead.code}">
-            ${state.highlightColorCode === bead.code ? '取消' : '点亮'}
+          <button class="btn btn-sm btn-secondary highlight-btn" data-code="${bead.code}">
+            ${state.highlightColorCode === bead.code ? '取消' : '高亮'}
           </button>
         </td>
       `;
@@ -1502,9 +1502,9 @@
     });
 
     navigator.clipboard.writeText(text).then(() => {
-      alert('用量清单已成功复制到剪贴板！');
+      showToast('用量清单已成功复制到剪贴板！');
     }).catch(() => {
-      alert(text);
+      showToast('清单已复制');
     });
   }
 
